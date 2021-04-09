@@ -1,3 +1,4 @@
+run,result
 saved_models/a2c_soccer_actions_env_1_0,0.014812300383841074
 saved_models/a2c_soccer_actions_env_1_1,0.016396008972137804
 saved_models/a2c_soccer_actions_env_1_2,0.015627131569900782

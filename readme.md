@@ -12,3 +12,6 @@ A data-driven soccer environment built using event data. Compatible with OpenGYM
     - 003 - Use this to change the way we build the pass model
 
 ## Notebooks 01X - Reinforcement learning
+    - 010 - Example of how to run a reinforcement learning on the environment
+    - 011 - Systematic testing of RL algorithms
+    
