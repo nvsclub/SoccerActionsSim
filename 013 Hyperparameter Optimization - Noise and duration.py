@@ -24,7 +24,7 @@ env = SoccerActionsEnv(randomized_start=True, end_on_xg=True)
 def test_model(env, model, name):
     saving_rewards = []
     obs = env.reset()
-    for i in tqdm(range(10000)):
+    for i in tqdm(range(20000)):
         action, _states = model.predict(obs)
         obs, rewards, done, info = env.step(action)
         if done:
@@ -36,8 +36,8 @@ def test_model(env, model, name):
 
 # Optimization function
 def objective(trial):
-    noise = trial.suggest_uniform('Noise', 0.1, 1)
-    timesteps = trial.suggest_int('Timesteps', 1, 100)
+    noise = trial.suggest_uniform('Noise', 0.1, 0.8)
+    timesteps = trial.suggest_int('Timesteps', 10, 100)
 
     n_actions = env.action_space.shape[-1]
     action_noise = OrnsteinUhlenbeckActionNoise(mean=np.zeros(n_actions), sigma=float(noise) * np.ones(n_actions))
@@ -47,5 +47,5 @@ def objective(trial):
     return test_model(env, model, '')
 
 study = optuna.create_study(direction='maximize')
-study.optimize(objective, n_trials=50)
+study.optimize(objective, n_trials=25)
 study.trials_dataframe.to_csv('saved_models/optuna_optimization_noise-duration.csv')
