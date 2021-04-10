@@ -48,4 +48,4 @@ def objective(trial):
 
 study = optuna.create_study(direction='maximize')
 study.optimize(objective, n_trials=25)
-study.trials_dataframe.to_csv('saved_models/optuna_optimization_noise-duration.csv')
+study.trials_dataframe().to_csv('saved_models/optuna_optimization_noise-duration.csv')

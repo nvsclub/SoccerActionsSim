@@ -9,11 +9,8 @@ class SoccerActionsEnv(gym.Env):
     """Custom Environment that follows gym interface"""
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, permanent_x=50, permanent_y=50, randomized_start=True, end_on_xg=True):
+    def __init__(self, permanent_x=50, permanent_y=50, randomized_start=True, end_on_xg=True, deterministic=True):
         super(SoccerActionsEnv, self).__init__()
-
-        # Setting seed NOT USED
-        self.seed = 0
 
         # Loading models
         self.pass_model = pickle.load(open('env/matrix/pass_gradient.sav', 'rb'))
@@ -24,6 +21,7 @@ class SoccerActionsEnv(gym.Env):
         self.permanent_y = permanent_y
         self.randomized_start = randomized_start
         self.end_on_xg = end_on_xg
+        self.deterministic = deterministic
 
         # Define action and observation space
         self.action_space = spaces.Box(low=np.float32(np.array([0, 0, 0])), high=np.float32(np.array([1, 1, 1])))
@@ -32,8 +30,11 @@ class SoccerActionsEnv(gym.Env):
         # Action storage
         self.action_storage = []
 
-    def seed(self, seed):
-        self.seed = seed
+    def toggle_deterministic_env(self):
+        self.deterministic = True
+    
+    def toggle_probabilistic_env(self):
+        self.deterministic = False
 
     def step(self, action):
         # Execute one time step within the environment
@@ -41,30 +42,60 @@ class SoccerActionsEnv(gym.Env):
         original_state = self._next_observation()
         
         # Action[0] defines if action is a shot or a pass
-        if action[0] < 0.5:
-            self.xg = self.shot_model.predict_proba([[self.x, self.y]])[0,1]
-            self.goal = random() < self.xg
-            self.done = True
+        if self.deterministic:
+            if action[0] < 0.5:
+                self.xg = self.shot_model.predict_proba([[self.x, self.y]])[0,1]
+                self.goal = random() < self.xg
+                self.done = True
 
-            if self.end_on_xg:
-                self.reward += self.xg
+                if self.end_on_xg:
+                    self.reward += self.xg
+                else:
+                    self.reward += self.goal
             else:
-                self.reward += self.goal
+                # Action[1,2] are the pointers for the pass action
+                outcome_probability = self.pass_model.predict_proba([[self.x, self.y, action[1], action[2]]])[0,1]
+                self.done = random() > outcome_probability
+                
+                if not self.done:
+                    prev_x = self.x
+                    self.x = self.x + action[1] * np.cos((action[2] - 0.5) * 2 * np.pi)
+                    self.y = self.y + action[1] * np.sin((action[2] - 0.5) * 2 * np.pi)
+
+                    if not (0 < self.y < 1) and not (0 < self.x < 1):
+                        self.done = True
+
+                    # Reward sucessful passes, but not if the pass was backwards
+                    self.reward += 0.0001 * (self.x > prev_x)
+        # Action[0] defines the probabilities of the doing action
         else:
-            # Action[1,2] are the pointers for the pass action
-            outcome_probability = self.pass_model.predict_proba([[self.x, self.y, action[1], action[2]]])[0,1]
-            self.done = random() > outcome_probability
-            
-            if not self.done:
-                prev_x = self.x
-                self.x = self.x + action[1] * np.cos((action[2] - 0.5) * 2 * np.pi)
-                self.y = self.y + action[1] * np.sin((action[2] - 0.5) * 2 * np.pi)
+            # Pass
+            if random() < action[0]:
+                # Action[1,2] are the pointers for the pass action
+                outcome_probability = self.pass_model.predict_proba([[self.x, self.y, action[1], action[2]]])[0,1]
+                self.done = random() > outcome_probability
+                
+                if not self.done:
+                    prev_x = self.x
+                    self.x = self.x + action[1] * np.cos((action[2] - 0.5) * 2 * np.pi)
+                    self.y = self.y + action[1] * np.sin((action[2] - 0.5) * 2 * np.pi)
 
-                if not (0 < self.y < 1) and not (0 < self.x < 1):
-                    self.done = True
+                    if not (0 < self.y < 1) and not (0 < self.x < 1):
+                        self.done = True
 
-                # Reward sucessful passes, but not if the pass was backwards
-                self.reward += 0.0001 * (self.x > prev_x)
+                    # Reward sucessful passes, but not if the pass was backwards
+                    self.reward += 0.0001 * (self.x > prev_x)
+            # Shot
+            else:
+                self.xg = self.shot_model.predict_proba([[self.x, self.y]])[0,1]
+                self.goal = random() < self.xg
+                self.done = True
+
+                if self.end_on_xg:
+                    self.reward += self.xg
+                else:
+                    self.reward += self.goal
+
 
         obs = self._next_observation()
 

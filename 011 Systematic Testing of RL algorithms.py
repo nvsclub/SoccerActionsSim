@@ -87,7 +87,7 @@ for i in range(n_tests):
 for i in range(n_tests):
     test_name = 'saved_models/sac_soccer_actions_env_1_' + str(i)
     n_actions = env.action_space.shape[-1]
-    model = PPO('MlpPolicy', env)
+    model = SAC('MlpPolicy', env)
     model.learn(total_timesteps=10000, log_interval=1000)
     model.save(test_name)
     test_model(env, model, test_name)
