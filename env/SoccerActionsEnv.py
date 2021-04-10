@@ -12,6 +12,9 @@ class SoccerActionsEnv(gym.Env):
     def __init__(self, permanent_x=50, permanent_y=50, randomized_start=True, end_on_xg=True):
         super(SoccerActionsEnv, self).__init__()
 
+        # Setting seed NOT USED
+        self.seed = 0
+
         # Loading models
         self.pass_model = pickle.load(open('env/matrix/pass_gradient.sav', 'rb'))
         self.shot_model = pickle.load(open('env/matrix/shot_gradient.sav', 'rb'))
@@ -28,6 +31,9 @@ class SoccerActionsEnv(gym.Env):
 
         # Action storage
         self.action_storage = []
+
+    def seed(self, seed):
+        self.seed = seed
 
     def step(self, action):
         # Execute one time step within the environment
