@@ -64,9 +64,9 @@ class SoccerActionsEnv(gym.Env):
 
                     if not (0 < self.y < 1) and not (0 < self.x < 1):
                         self.done = True
-
                     # Reward sucessful passes, but not if the pass was backwards
-                    self.reward += 0.0001 * (self.x > prev_x)
+                    else:
+                        self.reward += 0.0001 * (self.x > prev_x)
         # Action[0] defines the probabilities of the doing action
         else:
             # Pass

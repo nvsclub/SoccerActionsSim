@@ -49,7 +49,7 @@ for i in range(n_tests):
 for i in range(n_tests):
     test_name = 'saved_models/ddpg_soccer_actions_env_1_' + str(i)
     n_actions = env.action_space.shape[-1]
-    action_noise = OrnsteinUhlenbeckActionNoise(mean=np.zeros(n_actions), sigma=float(0.5) * np.ones(n_actions))
+    action_noise = OrnsteinUhlenbeckActionNoise(mean=np.zeros(n_actions), sigma=float(0.3) * np.ones(n_actions))
     model = DDPG('MlpPolicy', env, action_noise=action_noise)
     model.learn(total_timesteps=10000, log_interval=1000)
     model.save(test_name)
@@ -58,8 +58,8 @@ for i in range(n_tests):
 for i in range(n_tests):
     test_name = 'saved_models/ddpg_soccer_actions_env_2_' + str(i)
     n_actions = env.action_space.shape[-1]
-    action_noise = OrnsteinUhlenbeckActionNoise(mean=np.zeros(n_actions), sigma=float(0.5) * np.ones(n_actions))
-    policy_kwargs = dict(net_arch=[100, 100, 100])
+    action_noise = OrnsteinUhlenbeckActionNoise(mean=np.zeros(n_actions), sigma=float(0.3) * np.ones(n_actions))
+    policy_kwargs = dict(net_arch=[400, 300])
     model = DDPG('MlpPolicy', env, action_noise=action_noise, policy_kwargs=policy_kwargs)
     model.learn(total_timesteps=10000, log_interval=1000)
     model.save(test_name)
@@ -68,7 +68,7 @@ for i in range(n_tests):
 for i in range(n_tests):
     test_name = 'saved_models/ddpg_soccer_actions_env_3_' + str(i)
     n_actions = env.action_space.shape[-1]
-    action_noise = NormalActionNoise(mean=np.zeros(n_actions), sigma=float(0.2) * np.ones(n_actions))
+    action_noise = NormalActionNoise(mean=np.zeros(n_actions), sigma=float(0.3) * np.ones(n_actions))
     model = DDPG('MlpPolicy', env, action_noise=action_noise)
     model.learn(total_timesteps=10000, log_interval=1000)
     model.save(test_name)
@@ -96,7 +96,7 @@ for i in range(n_tests):
 for i in range(n_tests):
     test_name = 'saved_models/td3_soccer_actions_env_1_' + str(i)
     n_actions = env.action_space.shape[-1]
-    action_noise = OrnsteinUhlenbeckActionNoise(mean=np.zeros(n_actions), sigma=float(0.5) * np.ones(n_actions))
+    action_noise = OrnsteinUhlenbeckActionNoise(mean=np.zeros(n_actions), sigma=float(0.3) * np.ones(n_actions))
     model = TD3('MlpPolicy', env, action_noise=action_noise)
     model.learn(total_timesteps=10000, log_interval=1000)
     model.save(test_name)
@@ -105,11 +105,36 @@ for i in range(n_tests):
 for i in range(n_tests):
     test_name = 'saved_models/td3_soccer_actions_env_2_' + str(i)
     n_actions = env.action_space.shape[-1]
-    action_noise = NormalActionNoise(mean=np.zeros(n_actions), sigma=float(0.2) * np.ones(n_actions))
+    action_noise = NormalActionNoise(mean=np.zeros(n_actions), sigma=float(0.3) * np.ones(n_actions))
     model = TD3('MlpPolicy', env, action_noise=action_noise)
     model.learn(total_timesteps=10000, log_interval=1000)
     model.save(test_name)
     test_model(env, model, test_name)
 
 
+test_name = 'saved_models/ddpg_soccer_actions_env_2_BIG'
+n_actions = env.action_space.shape[-1]
+action_noise = OrnsteinUhlenbeckActionNoise(mean=np.zeros(n_actions), sigma=float(0.3) * np.ones(n_actions))
+policy_kwargs = dict(net_arch=[400, 300])
+model = DDPG('MlpPolicy', env, action_noise=action_noise, policy_kwargs=policy_kwargs)
+model.learn(total_timesteps=100000, log_interval=1000)
+model.save(test_name)
+test_model(env, model, test_name)
 
+test_name = 'saved_models/ddpg_soccer_actions_env_2_BIG1'
+n_actions = env.action_space.shape[-1]
+action_noise = OrnsteinUhlenbeckActionNoise(mean=np.zeros(n_actions), sigma=float(0.3) * np.ones(n_actions))
+policy_kwargs = dict(net_arch=[400, 300])
+model = DDPG('MlpPolicy', env, action_noise=action_noise, policy_kwargs=policy_kwargs)
+model.learn(total_timesteps=1000000, log_interval=1000)
+model.save(test_name)
+test_model(env, model, test_name)
+
+test_name = 'saved_models/ddpg_soccer_actions_env_2_BIG2'
+n_actions = env.action_space.shape[-1]
+action_noise = OrnsteinUhlenbeckActionNoise(mean=np.zeros(n_actions), sigma=float(0.3) * np.ones(n_actions))
+policy_kwargs = dict(net_arch=[400, 300])
+model = DDPG('MlpPolicy', env, action_noise=action_noise, policy_kwargs=policy_kwargs)
+model.learn(total_timesteps=1000000, log_interval=1000)
+model.save(test_name)
+test_model(env, model, test_name)
