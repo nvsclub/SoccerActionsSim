@@ -56,11 +56,11 @@ def test_model(action, r, a):
     obs = env.reset()
 
     saving_rewards = []
-    for i in tqdm(range(20000)):
+    for i in tqdm(range(10000)):
         pos = calculate_square(obs[0], obs[1])
         obs, rewards, done, info = env.step([action[pos], r[pos], a[pos]])
         if done:
-            saving_rewards.append(rewards)
+            saving_rewards.append(info['expectedGoals'])
             env.reset()
 
     return np.mean(saving_rewards)

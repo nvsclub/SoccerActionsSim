@@ -28,7 +28,7 @@ def test_model(env, model, name):
         action, _states = model.predict(obs)
         obs, rewards, done, info = env.step(action)
         if done:
-            saving_rewards.append(rewards)
+            saving_rewards.append(info['expectedGoals'])
             env.reset()
 
     return np.mean(saving_rewards)

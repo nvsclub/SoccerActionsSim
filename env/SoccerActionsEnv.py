@@ -62,7 +62,7 @@ class SoccerActionsEnv(gym.Env):
                     self.x = self.x + action[1] * np.cos((action[2] - 0.5) * 2 * np.pi)
                     self.y = self.y + action[1] * np.sin((action[2] - 0.5) * 2 * np.pi)
 
-                    if not (0 < self.y < 1) and not (0 < self.x < 1):
+                    if not (0 < self.y < 1) or not (0 < self.x < 1):
                         self.done = True
                     # Reward sucessful passes, but not if the pass was backwards
                     else:
@@ -80,7 +80,7 @@ class SoccerActionsEnv(gym.Env):
                     self.x = self.x + action[1] * np.cos((action[2] - 0.5) * 2 * np.pi)
                     self.y = self.y + action[1] * np.sin((action[2] - 0.5) * 2 * np.pi)
 
-                    if not (0 < self.y < 1) and not (0 < self.x < 1):
+                    if not (0 < self.y < 1) or not (0 < self.x < 1):
                         self.done = True
 
                     # Reward sucessful passes, but not if the pass was backwards
