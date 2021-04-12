@@ -23,17 +23,22 @@ env = SoccerActionsEnv(randomized_start=True, end_on_xg=True)
 
 def test_model(env, model, name):
     saving_rewards = []
+    saving_action_count = []
     obs = env.reset()
+    count = 0
     for i in tqdm(range(10000)):
+        count += 1
         action, _states = model.predict(obs)
         obs, rewards, done, info = env.step(action)
         if done:
             saving_rewards.append(info['expectedGoals'])
+            saving_action_count.append(count)
+            count = 0
             env.reset()
-    print(name, np.mean(saving_rewards))
+    print(name, np.mean(saving_rewards), np.mean(saving_action_count))
 
     f = open('saved_models/results.txt', 'a')
-    f.write(f'{name},{np.mean(saving_rewards)}\n')
+    f.write(f'{name},{np.mean(saving_rewards)},{np.mean(saving_action_count)}\n')
     f.close()
 
 # A2C algorithm
