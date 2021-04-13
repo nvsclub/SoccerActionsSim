@@ -1,4 +1,4 @@
-run,result
+run,result,avgactionno
 saved_models/a2c_soccer_actions_env_1_0,0.015839930196289563,1.000100010001
 saved_models/a2c_soccer_actions_env_1_1,0.01491426290303151,1.0
 saved_models/a2c_soccer_actions_env_1_2,0.01614101019697964,1.0
