@@ -109,8 +109,8 @@ def plot_action_sequence(action_storage):
         for patch in all_patches:
             plt.gcf().gca().add_artist(patch)
 
-def plot_multiple_action_sequences(action_storages):
-    pitch()
+def plot_multiple_action_sequences(action_storages, dpi=144):
+    pitch(dpi=dpi)
     actions_group = []
     for action_storage in action_storages:
         for action_no, action_sample in enumerate(action_storage):
